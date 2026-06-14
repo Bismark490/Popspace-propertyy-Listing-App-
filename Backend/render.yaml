@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: propspace-api
+    env: node
+    buildCommand: npm install
+    startCommand: node src/server.js
+    envVars:
+      - key: MONGODB_URI
+        value: mongodb://asongsehqueentin291_db_user:ASOsar677@ac-qf1rhvv-shard-00-00.splcjw2.mongodb.net:27017,ac-qf1rhvv-shard-00-01.splcjw2.mongodb.net:27017,ac-qf1rhvv-shard-00-02.splcjw2.mongodb.net:27017/propspace?ssl=true&replicaSet=atlas-khnkj6-shard-0&authSource=admin&appName=Cluster0
+      - key: JWT_SECRET
+        value: propspace_super_secret_jwt_key_2024_exam_project
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: NODE_ENV
+        value: production
+      - key: CLIENT_URL
+        value: https://propspace-app.vercel.app
