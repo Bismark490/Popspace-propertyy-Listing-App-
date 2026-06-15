@@ -13,8 +13,7 @@ const HomePage = () => {
   const [filters, setFilters] = useState({});
 
   const fetchProperties = useCallback(async (activeFilters = {}) => {
-    setLoading(true);
-    setError('');
+    setLoading(true); setError('');
     try {
       const params = new URLSearchParams();
       if (activeFilters.city) params.append('city', activeFilters.city);
@@ -22,29 +21,17 @@ const HomePage = () => {
       if (activeFilters.maxPrice) params.append('maxPrice', activeFilters.maxPrice);
       if (activeFilters.type) params.append('type', activeFilters.type);
       if (activeFilters.listingType) params.append('listingType', activeFilters.listingType);
-
       const { data } = await api.get(`/properties?${params.toString()}`);
       setProperties(data.data);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to load properties');
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   }, []);
 
-  // Mount: fetch properties once
-  useEffect(() => {
-    fetchProperties(filters);
-    return () => {}; // Cleanup
-  }, [fetchProperties, filters]);
-
-  const handleFilter = (newFilters) => {
-    setFilters(newFilters);
-  };
+  useEffect(() => { fetchProperties(filters); return () => {}; }, [fetchProperties, filters]);
 
   return (
     <div className="home-page">
-      {/* Hero */}
       <section className="hero-section">
         <div className="hero-content">
           <h1 className="hero-title">Find Your Perfect <span className="gradient-text">Space</span></h1>
@@ -58,33 +45,14 @@ const HomePage = () => {
           </div>
         </div>
       </section>
-
-      {/* Main Content */}
       <div className="main-content">
-        <FilterSidebar onFilter={handleFilter} />
-
+        <FilterSidebar onFilter={setFilters} />
         <section className="listings-section">
-          <div className="listings-header">
-            <h2>{properties.length} Properties Found</h2>
-          </div>
-
+          <div className="listings-header"><h2>{properties.length} Properties Found</h2></div>
           {error && <ErrorMessage message={error} />}
-
-          {loading ? (
-            <LoadingSpinner message="Fetching properties..." />
-          ) : properties.length === 0 ? (
-            <EmptyState
-              icon="🏘️"
-              title="No Properties Found"
-              message="Try adjusting your filters or check back later for new listings."
-            />
-          ) : (
-            <div className="properties-grid">
-              {properties.map((prop) => (
-                <PropertyCard key={prop._id} property={prop} />
-              ))}
-            </div>
-          )}
+          {loading ? <LoadingSpinner message="Fetching properties..." /> :
+           properties.length === 0 ? <EmptyState icon="🏘️" title="No Properties Found" message="Try adjusting your filters or check back later." /> :
+           <div className="properties-grid">{properties.map(p => <PropertyCard key={p._id} property={p} />)}</div>}
         </section>
       </div>
     </div>

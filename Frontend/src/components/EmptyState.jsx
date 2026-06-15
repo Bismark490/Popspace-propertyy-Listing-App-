@@ -5,5 +5,4 @@ const EmptyState = ({ icon = '🏘️', title = 'Nothing here yet', message = 'N
     <p className="empty-message">{message}</p>
   </div>
 );
-
 export default EmptyState;

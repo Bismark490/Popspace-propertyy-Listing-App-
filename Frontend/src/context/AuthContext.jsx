@@ -1,5 +1,4 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import api from '../api/api';
 
 const AuthContext = createContext(null);
 
@@ -8,18 +7,19 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // ─── Initialize from localStorage on mount ──────────────────────────────────
   useEffect(() => {
     const storedToken = localStorage.getItem('propspace_token');
     const storedUser = localStorage.getItem('propspace_user');
-
     if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+      try {
+        setToken(storedToken);
+        setUser(JSON.parse(storedUser));
+      } catch (e) {
+        localStorage.removeItem('propspace_token');
+        localStorage.removeItem('propspace_user');
+      }
     }
     setLoading(false);
-
-    // Cleanup: nothing to teardown for localStorage reads
     return () => {};
   }, []);
 
